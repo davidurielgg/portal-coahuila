@@ -391,13 +391,161 @@
     .s-proceso  { background: #fef3c7; color: #92400e; }
     .s-resuelto { background: #d1fae5; color: #065f46; }
     .s-cerrado  { background: #f3f4f6; color: #374151; }
+    .s-noprocede { background: #fee2e2; color: #991b1b; }
     .s-default  { background: rgba(255,255,255,0.15); color: #ffffff; }
 
     .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .d-nuevo    { background: #3b82f6; }
-    .d-proceso  { background: #f59e0b; animation: blink 1.4s infinite; }
-    .d-resuelto { background: #10b981; }
-    .d-cerrado  { background: #9ca3af; }
+    .d-nuevo     { background: #3b82f6; }
+    .d-proceso   { background: #f59e0b; animation: blink 1.4s infinite; }
+    .d-resuelto  { background: #10b981; }
+    .d-cerrado   { background: #9ca3af; }
+    .d-noprocede { background: #ef4444; animation: blink 1.4s infinite; }
+
+    /* ── NO PROCEDE BANNER ── */
+    .noprocede-banner {
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+      border-left: 6px solid #dc2626;
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .noprocede-icon {
+      width: 36px;
+      height: 36px;
+      background: #fee2e2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .noprocede-icon svg { width: 18px; height: 18px; fill: #dc2626; }
+
+    .noprocede-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: #991b1b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .noprocede-text {
+      font-size: 14px;
+      color: #7f1d1d;
+      line-height: 1.5;
+    }
+
+    /* ── COMENTARIO ── */
+    .comentario-block {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: var(--radius-sm);
+      padding: 13px 15px;
+      margin-bottom: 18px;
+    }
+
+    .comentario-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .comentario-label svg { width: 13px; height: 13px; fill: #92400e; }
+    .comentario-text { font-size: 14px; color: #78350f; line-height: 1.55; }
+
+    /* ── EVIDENCIA ── */
+    .evidencia-block {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-left: 4px solid #22c55e;
+      border-radius: var(--radius-sm);
+      padding: 13px 15px;
+      margin-bottom: 18px;
+    }
+
+    .evidencia-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #166534;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .evidencia-label svg { width: 13px; height: 13px; fill: #166534; }
+
+    .evidencia-img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid #86efac;
+      display: block;
+      cursor: zoom-in;
+    }
+
+    .evidencia-error {
+      font-size: 13px;
+      color: #166534;
+      font-style: italic;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: var(--radius-md);
+      object-fit: contain;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
@@ -679,10 +827,16 @@
     <div class="footer-brand">COAHUILA CONECTADO</div>
   </footer>
 
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
+    <button class="lightbox-close" onclick="cerrarLightbox()">&times;</button>
+    <img id="lightboxImg" src="" alt="Evidencia del reporte" onclick="event.stopPropagation()" />
+  </div>
+
 </div>
 
 <script>
-var API_URL = 'https://script.google.com/macros/s/AKfycbwRUTx-0807Tf9vPeCTvB8e11KhYlXyBZpmZae9hvdiTapnGa8SHo2KHVCy7WoBrNoq/exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbzN505nt9t7XO5N6U3-XiWI5kuVtYbYLoOWnmHeZVdKSb1puzxK8c7JvQo1AxIXriTo/exec';
 
 var ICONS = {
   check:  '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
@@ -695,13 +849,15 @@ var ICONS = {
 function statusInfo(s) {
   if (!s) return { cls: 's-default', dot: '', label: 'Sin estatus' };
   var l = s.toLowerCase();
-  if (l.indexOf('nuevo') >= 0)    return { cls: 's-nuevo',    dot: 'd-nuevo',    label: s };
+  if (l.indexOf('no procede') >= 0 || l.indexOf('noprocede') >= 0)
+                                   return { cls: 's-noprocede', dot: 'd-noprocede', label: s };
+  if (l.indexOf('nuevo') >= 0)    return { cls: 's-nuevo',     dot: 'd-nuevo',     label: s };
   if (l.indexOf('proceso') >= 0 || l.indexOf('progreso') >= 0 || l.indexOf('atend') >= 0)
-                                   return { cls: 's-proceso',  dot: 'd-proceso',  label: s };
+                                   return { cls: 's-proceso',   dot: 'd-proceso',   label: s };
   if (l.indexOf('resuelto') >= 0 || l.indexOf('completado') >= 0 || l.indexOf('solucion') >= 0)
-                                   return { cls: 's-resuelto', dot: 'd-resuelto', label: s };
+                                   return { cls: 's-resuelto',  dot: 'd-resuelto',  label: s };
   if (l.indexOf('cerrado') >= 0 || l.indexOf('cancelado') >= 0)
-                                   return { cls: 's-cerrado',  dot: 'd-cerrado',  label: s };
+                                   return { cls: 's-cerrado',   dot: 'd-cerrado',   label: s };
   return { cls: 's-default', dot: '', label: s };
 }
 
@@ -763,13 +919,78 @@ function mostrarResultado(data, q) {
       'Verifica que lo hayas copiado correctamente desde WhatsApp.');
     return;
   }
-  var si = statusInfo(data.estatus);
-  var tl = timelineSteps(data.estatus);
+
+  var si  = statusInfo(data.estatus);
+  var tl  = timelineSteps(data.estatus);
+  var est = (data.estatus || '').toLowerCase();
+  var esNoProcede = est.indexOf('no procede') >= 0 || est.indexOf('noprocede') >= 0;
+  var esResuelto  = est.indexOf('resuelto') >= 0 || est.indexOf('completado') >= 0 || est.indexOf('solucion') >= 0;
+
   var tlHTML = '';
   for (var i = 0; i < tl.length; i++) {
     tlHTML += '<div class="tl-step ' + tl[i].cls + '"><div class="tl-dot">' +
               tl[i].icon + '</div><div class="tl-label">' + tl[i].label + '</div></div>';
   }
+
+  /* Bloque NO PROCEDE */
+  var noProcHTML = '';
+  if (esNoProcede) {
+    var comentario = (data.comentario || '').trim();
+    noProcHTML =
+      '<div class="noprocede-banner">' +
+        '<div class="noprocede-icon">' +
+          '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>' +
+        '</div>' +
+        '<div>' +
+          '<div class="noprocede-title">Reporte No Procedente</div>' +
+          '<div class="noprocede-text">' +
+            (comentario
+              ? esc(comentario)
+              : 'Tu reporte fue revisado y determinado como no procedente por la dependencia correspondiente. Para mayor informacion comunicate con el municipio.') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* Bloque COMENTARIO (para otros estatus que tengan comentario) */
+  var comentHTML = '';
+  if (!esNoProcede && data.comentario && data.comentario.trim()) {
+    comentHTML =
+      '<div class="comentario-block">' +
+        '<div class="comentario-label">' +
+          '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>' +
+          ' Comentario del municipio' +
+        '</div>' +
+        '<div class="comentario-text">' + esc(data.comentario) + '</div>' +
+      '</div>';
+  }
+
+  /* Bloque EVIDENCIA */
+  var evidHTML = '';
+  if (esResuelto && data.evidencia && data.evidencia.trim()) {
+    var urlEvidencia = data.evidencia.trim();
+    /* Convertir link de Dropbox a enlace directo si aplica */
+    if (urlEvidencia.indexOf('dropbox.com') >= 0) {
+      urlEvidencia = urlEvidencia.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0','').replace('?dl=1','');
+      if (urlEvidencia.indexOf('?') >= 0) {
+        urlEvidencia = urlEvidencia + '&raw=1';
+      } else {
+        urlEvidencia = urlEvidencia + '?raw=1';
+      }
+    }
+    evidHTML =
+      '<div class="evidencia-block">' +
+        '<div class="evidencia-label">' +
+          '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>' +
+          ' Evidencia de resolucion' +
+        '</div>' +
+        '<img class="evidencia-img" src="' + urlEvidencia + '" alt="Evidencia" ' +
+          'onclick="abrirLightbox(\'' + urlEvidencia.replace(/'/g,"\\'") + '\')" ' +
+          'onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'" />' +
+        '<div class="evidencia-error" style="display:none">No se pudo cargar la imagen de evidencia.</div>' +
+      '</div>';
+  }
+
   result.innerHTML =
     '<div class="result-card"><div class="card-head"><div>' +
     '<div class="rep-num">'  + esc(data.numero_reporte || q.toUpperCase()) + '</div>' +
@@ -783,7 +1004,21 @@ function mostrarResultado(data, q) {
     '</div>' +
     (data.motivo ? '<div class="motivo-block"><div class="motivo-label">' + ICONS.note +
       ' Descripcion del reporte</div><div class="motivo-text">' + esc(data.motivo) + '</div></div>' : '') +
+    noProcHTML +
+    comentHTML +
+    evidHTML +
     '<div class="timeline">' + tlHTML + '</div></div></div>';
+}
+
+function abrirLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function buscarReporte() {
