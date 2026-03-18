@@ -269,7 +269,7 @@
 
 </div>
 <script>
-var API_URL = 'https://script.google.com/macros/s/AKfycbzxpO5sZOCdD8FWFnAoy56yaX0rHl_Ap1375pbCd-89Q3NHr8WswOa4fuQ_AdsDDLVo/exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbx4MxytqKdgrl58MQzk49sTfLwf3i1kpkgyoO-1EUX71uTf6vG-WTL2GAS1rgkJkle1/exec';
 
 var ICO = {
   check: '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
@@ -298,26 +298,22 @@ function statusInfo(s) {
 }
 
 function tlHTML(key) {
+  /* Si es No Procede — no hay timeline, solo el banner */
+  if (key === 'noprocede') return '';
+
+  /* Para los otros 3 estatus — timeline lineal de 3 pasos */
   var steps = [
     { label:'Recibido',    k:'recibido'  },
     { label:'En atencion', k:'atencion'  },
-    { label:'Resuelto',    k:'resuelto'  },
-    { label:'No Procede',  k:'noprocede' }
+    { label:'Resuelto',    k:'resuelto'  }
   ];
   var order = ['recibido','atencion','resuelto'];
   var curIdx = order.indexOf(key);
-  var isNP   = key === 'noprocede';
   var h = '';
   for (var i = 0; i < steps.length; i++) {
     var s = steps[i]; var cls = 'pending'; var ico = ICO.empty;
-    if (isNP) {
-      if (s.k === 'recibido')   { cls = 'done';  ico = ICO.check; }
-      if (s.k === 'noprocede')  { cls = 'now-np'; ico = ICO.x; }
-    } else {
-      var si = order.indexOf(s.k);
-      if (si >= 0 && si < curIdx)  { cls = 'done'; ico = ICO.check; }
-      if (si >= 0 && si === curIdx){ cls = 'now';  ico = ICO.dot; }
-    }
+    if (i < curIdx)  { cls = 'done'; ico = ICO.check; }
+    if (i === curIdx){ cls = 'now';  ico = ICO.dot;   }
     h += '<div class="tl-step ' + cls + '"><div class="tl-dot">' + ico + '</div><div class="tl-label">' + s.label + '</div></div>';
   }
   return h;
@@ -380,11 +376,12 @@ function mostrarResultado(data, q) {
           '<div><div class="info-label">Ciudadano</div><div class="info-val">'+esc(data.nombre||'\u2014')+'</div></div>'+
           '<div><div class="info-label">Area responsable</div><div class="info-val">'+esc(data.area||'\u2014')+'</div></div>'+
           '<div><div class="info-label">Fecha de registro</div><div class="info-val">'+esc(data.fecha||'\u2014')+'</div></div>'+
+          '<div><div class="info-label">Hora de registro</div><div class="info-val">'+esc(data.hora||'\u2014')+'</div></div>'+
           '<div><div class="info-label">Colonia</div><div class="info-val">'+esc(data.colonia||'\u2014')+'</div></div>'+
         '</div>'+
         (data.motivo?'<div class="motivo-block"><div class="motivo-label">'+ICO.note+' Descripcion del reporte</div><div class="motivo-text">'+esc(data.motivo)+'</div></div>':'')+
         npH + comH + evH +
-        '<div class="timeline">'+tlHTML(si.key)+'</div>'+
+        (si.key !== 'noprocede' ? '<div class="timeline">'+tlHTML(si.key)+'</div>' : '')+
         '<button class="print-btn" onclick="window.print()">'+ICO.print+' Imprimir comprobante</button>'+
       '</div>'+
     '</div>';
